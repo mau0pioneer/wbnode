@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   app:
     build:
@@ -8,4 +7,13 @@ services:
     ports:
       - "3002:3002"
     volumes:
-      - ./bot.qr.png:/usr/src/app/bot.qr.png
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  qr:
+    build:
+      context: .
+      dockerfile: Dockerfile.qr
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./bot.qr.png:/var/www/html/bot.qr.png

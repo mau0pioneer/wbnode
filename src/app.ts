@@ -26,12 +26,12 @@ app.post('/send/message', handleCtx(async (bot, req, res) => {
     }
 
     await provider.sendMessage(phone, message, {
-        media,
+        media
     });
     res.end('Message sent');
 }));
 
-const flowWelcome = addKeyword('hola').addAnswer('Hola, ¿en qué puedo ayudarte?');
+const flowWelcome = addKeyword(['hola']).addAnswer('Hola, ¿en qué puedo ayudarte?');
 
 createBot({
     flow: createFlow([flowWelcome]),

@@ -1,13 +1,14 @@
 FROM node:18.20.1
 
+# update npm
+RUN npm install -g npm@latest
+
+RUN mkdir -p /usr/src/app
+
 # Create app directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-COPY package*.json ./
-
-# Bundle app source
-COPY ./src/app.ts ./src/app.ts
+COPY package.json .
 
 RUN npm install
 
