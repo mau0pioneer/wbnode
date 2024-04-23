@@ -8,6 +8,13 @@ const main = async () => {
 
   provider.initHttpServer(3002);
 
+  provider.http?.server.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+  });
+
   provider.http?.server.post('/send/message', handleCtx(async (bot, req, res) => {
     const phone = req.body.number;
     const message = req.body.message;
