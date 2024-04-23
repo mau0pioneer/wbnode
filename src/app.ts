@@ -1,42 +1,44 @@
-import { addKeyword, createProvider, createFlow, createBot, MemoryDB } from '@bot-whatsapp/bot';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import { createProvider, createFlow, createBot, MemoryDB, addKeyword } from '@bot-whatsapp/bot';
 import { BaileysProvider, handleCtx } from '@bot-whatsapp/provider-baileys';
 
-const flowWelcome = addKeyword('hola').addAnswer('Hola, ¿en qué puedo ayudarte?');
+const app = express();
+const port = 3002;
 
-const main = async () => {
-  const provider = createProvider(BaileysProvider)
+app.use(bodyParser.json());
+app.use(cors()); // Configuración básica de CORS para permitir acceso desde cualquier origen
 
-  provider.initHttpServer(3002);
+const provider = createProvider(BaileysProvider);
 
-  provider.http?.server.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-  });
-
-  provider.http?.server.post('/send/message', handleCtx(async (bot, req, res) => {
+app.post('/send/message', handleCtx(async (bot, req, res) => {
     const phone = req.body.number;
     const message = req.body.message;
     const media = req.body.media;
 
-    if(!phone || !message) {
-      res.end('Phone and message are required')
-      return
+    console.log('Phone:', phone);
+    console.log('Message:', message);
+
+    if (!phone || !message) {
+        res.end('Phone and message are required. ' + phone + ' ' + message);
+        return;
     }
 
-    await bot.sendMessage(phone, message, {
-      media,
-    })
-    res.end('Message sent')
-  }))
+    await provider.sendMessage(phone, message, {
+        media,
+    });
+    res.end('Message sent');
+}));
 
-  createBot({
+const flowWelcome = addKeyword('hola').addAnswer('Hola, ¿en qué puedo ayudarte?');
+
+createBot({
     flow: createFlow([flowWelcome]),
     database: new MemoryDB(),
     provider,
-  })
+});
 
-}
-
-main();
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
