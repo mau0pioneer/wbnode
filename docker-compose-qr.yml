@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  php-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.qr
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./bot.qr.png:/var/www/html/bot.qr.png

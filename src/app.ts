@@ -27,7 +27,7 @@ const main = async () => {
   createBot({
     flow: createFlow([flowWelcome]),
     database: new MemoryDB(),
-    provider
+    provider,
   })
 
 }

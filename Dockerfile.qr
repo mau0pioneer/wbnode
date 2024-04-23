@@ -1,0 +1,16 @@
+# Usa la imagen oficial de PHP como base
+FROM php:7.4
+
+RUN mkdir -p /var/www/html
+
+# Establece el directorio de trabajo en /var/www/html
+WORKDIR /var/www/html
+
+# Copia los archivos PHP al directorio de trabajo
+COPY ./index.html /var/www/html/index.html
+
+# Expone el puerto 8000 para acceder al servidor web
+EXPOSE 8000
+
+# Inicia el servidor PHP en el puerto 8000
+CMD ["php", "-S", "0.0.0.0:8000"]
